@@ -1,15 +1,12 @@
 package com.example
 
-import com.example.plugins.*
-import io.ktor.client.call.*
+import com.example.plugins.configureRouting
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.server.application.*
 import io.ktor.server.testing.*
-import java.io.BufferedReader
-import java.io.File
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class ApplicationTest {
     @Test
@@ -22,11 +19,11 @@ class ApplicationTest {
             assertEquals("{\"hello\":\"world\"}", bodyAsText())
         }
         val response: HttpResponse = client.post("/") {
-            setBody(getResourceAsText("/accounts.txt"))
+            setBody(getAccountFileAsText())
         }
-        println(response.bodyAsText());
+        println(response.bodyAsText())
     }
 
-    fun getResourceAsText(path: String): String? =
-        object {}.javaClass.getResource(path)?.readText()
+    private fun getAccountFileAsText(): String? =
+        object {}.javaClass.getResource("/accounts.txt")?.readText()
 }
