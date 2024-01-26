@@ -2,6 +2,8 @@ package com.kkarlberg.application
 
 import mu.KotlinLogging
 import org.apache.commons.math3.stat.inference.ChiSquareTest
+import java.util.*
+import kotlin.collections.HashMap
 
 private val logger = KotlinLogging.logger {}
 
@@ -9,29 +11,25 @@ class BenfordCalculator {
 
     private val BENFORD_PERCENTAGES: DoubleArray = doubleArrayOf(30.10, 17.61, 12.49, 9.69, 7.92, 6.69, 5.80, 5.12, 4.58)
 
-    @Throws(Exception::class)
     fun processString(inData: String): BenfordSeries {
+        if ( Objects.isNull(inData) ) {
+            throw IllegalArgumentException("Indata is null")
+        }
         val numbers = getNumbersAsList(inData)
+        if ( numbers.isEmpty() || numbers.size < 500 ) {
+            throw IllegalArgumentException("Indata has too few values, need at least 500 number to make a sensible calculation")
+        }
         logger.info { "Making Benford series of ${numbers.size} numbers" }
         val eachCount = numbers.groupingBy { it.first() }.eachCount().toSortedMap()
 
         val digitPercentages = getDigitPercentages(eachCount, numbers.size)
         val expectedCounts = getExpectedDigitCounts(numbers.size)
         val chiSquareTest = ChiSquareTest().chiSquareTest(expectedCounts, toLongArray(eachCount))
-        val chiSquareTest2 = ChiSquareTest().chiSquareTest(expectedCounts, toLongArray2(expectedCounts))
-        println(chiSquareTest2)
-        return BenfordSeries(eachCount, digitPercentages, numbers.size, chiSquareTest )
-    }
-
-    private fun toLongArray2(expectedCounts: DoubleArray): LongArray {
-        val result = LongArray(9)
-        var j=0;
-        expectedCounts.forEach {
-            result[j] = it.toLong()
-            j++;
-        }
+        val result = BenfordSeries(eachCount, digitPercentages, numbers.size, chiSquareTest )
+        logger.info { "Result:  ${result}" }
         return result
     }
+
 
     private fun getDigitPercentages(eachCount: Map<Char, Int>, size: Int): Map<Char, Double> {
         return eachCount.entries.associate { it.key to (100.0*it.value/size) }
@@ -41,7 +39,7 @@ class BenfordCalculator {
         var j = 0
         val result = DoubleArray(9)
         BENFORD_PERCENTAGES.forEach {
-            result[j] = BENFORD_PERCENTAGES[j]/100.0 * total;
+            result[j] = BENFORD_PERCENTAGES[j]/100.0 * total
             j++
         }
         return result
