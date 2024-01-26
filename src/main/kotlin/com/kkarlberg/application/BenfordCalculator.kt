@@ -7,42 +7,54 @@ private val logger = KotlinLogging.logger {}
 
 class BenfordCalculator {
 
-    val BENFORD_PERCENTAGES: DoubleArray = doubleArrayOf(30.10, 17.61, 12.49, 9.69, 7.92, 6.69, 5.80, 5.12, 4.58)
+    private val BENFORD_PERCENTAGES: DoubleArray = doubleArrayOf(30.10, 17.61, 12.49, 9.69, 7.92, 6.69, 5.80, 5.12, 4.58)
 
     @Throws(Exception::class)
     fun processString(inData: String): BenfordSeries {
         val numbers = getNumbersAsList(inData)
         logger.info { "Making Benford series of ${numbers.size} numbers" }
-        val eachCount = numbers.groupingBy { it.first() }.eachCount()
+        val eachCount = numbers.groupingBy { it.first() }.eachCount().toSortedMap()
 
         val digitPercentages = getDigitPercentages(eachCount, numbers.size)
-        val expectedCounts = getExpectedDigitCounts(eachCount)
+        val expectedCounts = getExpectedDigitCounts(numbers.size)
         val chiSquareTest = ChiSquareTest().chiSquareTest(expectedCounts, toLongArray(eachCount))
+        val chiSquareTest2 = ChiSquareTest().chiSquareTest(expectedCounts, toLongArray2(expectedCounts))
+        println(chiSquareTest2)
         return BenfordSeries(eachCount, digitPercentages, numbers.size, chiSquareTest )
+    }
+
+    private fun toLongArray2(expectedCounts: DoubleArray): LongArray {
+        val result = LongArray(9)
+        var j=0;
+        expectedCounts.forEach {
+            result[j] = it.toLong()
+            j++;
+        }
+        return result
     }
 
     private fun getDigitPercentages(eachCount: Map<Char, Int>, size: Int): Map<Char, Double> {
         return eachCount.entries.associate { it.key to (100.0*it.value/size) }
     }
 
-    private fun getExpectedDigitCounts(eachCount: Map<Char, Int>): DoubleArray {
-        var j = 0;
-        val result = DoubleArray(9);
-        eachCount.forEach {
-            result[j] = it.value * BENFORD_PERCENTAGES[it.key.digitToInt()-1];
+    private fun getExpectedDigitCounts(total: Int): DoubleArray {
+        var j = 0
+        val result = DoubleArray(9)
+        BENFORD_PERCENTAGES.forEach {
+            result[j] = BENFORD_PERCENTAGES[j]/100.0 * total;
             j++
         }
-        return result;
+        return result
     }
 
     private fun toLongArray(eachCount: Map<Char, Int>): LongArray {
-        val result = LongArray(9);
-        var i =0;
+        val result = LongArray(9)
+        var i =0
         eachCount.values.forEach {
             result[i] = it.toLong()
-            i++;
+            i++
         }
-        return result;
+        return result
     }
 
     private fun getNumbersAsList(inData: String): List<String> {
