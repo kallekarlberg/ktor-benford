@@ -23,6 +23,8 @@ class ApplicationTest {
         val benfordDataStr = response.bodyAsText()
         val benfordData = Gson().fromJson(benfordDataStr, BenfordSeries::class.java)
         assertTrue( benfordData.chiSquareTest > 0.0)
+        // TODO 10. yes this test is not that useful, but you don't need to test the library anyway,
+        // if you make it a dependency, you can mock it
         //ToDo add more asserts here
     }
 

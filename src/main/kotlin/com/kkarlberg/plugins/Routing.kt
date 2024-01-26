@@ -13,6 +13,7 @@ import mu.KotlinLogging
 
 private val logger = KotlinLogging.logger {}
 
+// TODO 2. could you please format the code
 fun Application.configureRouting() {
     install(AutoHeadResponse)
     install(ContentNegotiation) {

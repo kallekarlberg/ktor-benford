@@ -6,6 +6,7 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.cachingheaders.*
 
 //ToDo not super-meaningful, was added as a test of ktor generator. Safe to remove
+// TODO 3. if this is not important for the solution, please remove it
 fun Application.configureHTTP() {
     install(CachingHeaders) {
         options { call, outgoingContent ->
