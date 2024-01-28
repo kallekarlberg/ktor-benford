@@ -1,9 +1,11 @@
-package com.example
+package com.kkarlberg
 
-import com.example.plugins.*
+import com.kkarlberg.plugins.configureHTTP
+import com.kkarlberg.plugins.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
+import org.apache.commons.math3.stat.inference.ChiSquareTest
 
 fun main() {
     embeddedServer(Netty, port = 8080, host = "0.0.0.0", module = Application::module)
@@ -12,5 +14,5 @@ fun main() {
 
 fun Application.module() {
     configureHTTP()
-    configureRouting()
+    configureRouting(ChiSquareTest())
 }

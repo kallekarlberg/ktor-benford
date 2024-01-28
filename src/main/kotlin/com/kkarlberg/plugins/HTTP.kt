@@ -1,4 +1,4 @@
-package com.example.plugins
+package com.kkarlberg.plugins
 
 import io.ktor.http.*
 import io.ktor.http.content.*
