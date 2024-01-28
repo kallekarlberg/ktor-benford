@@ -18,7 +18,7 @@ class BenfordCalculator(private val chiSquareTester: ChiSquareTest) {
             throw IllegalArgumentException("In data is null")
         }
         val numbers = getNumbersAsList(inData)
-        if ( numbers.isEmpty() || numbers.size < 500 ) {
+        if (numbers.isEmpty() || numbers.size < 500) {
             throw IllegalArgumentException("In data has too few values, need at least 500 number to make a sensible calculation")
         }
         logger.info { "Making Benford series of ${numbers.size} numbers" }

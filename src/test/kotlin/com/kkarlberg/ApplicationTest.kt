@@ -23,8 +23,7 @@ class ApplicationTest {
         assertEquals(200, response.status.value)
         val benfordDataStr = response.bodyAsText()
         val benfordData = Gson().fromJson(benfordDataStr, BenfordSeries::class.java)
-        println(benfordDataStr)
-        assertTrue( benfordData.pValue.toDouble() > 0.0)
+        assertEquals( 4085, benfordData.totalNumbers)
         //ToDo add more asserts here
     }
 

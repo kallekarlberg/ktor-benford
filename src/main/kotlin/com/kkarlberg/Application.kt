@@ -1,6 +1,5 @@
 package com.kkarlberg
 
-import com.kkarlberg.plugins.configureHTTP
 import com.kkarlberg.plugins.configureRouting
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -13,6 +12,5 @@ fun main() {
 }
 
 fun Application.module() {
-    configureHTTP()
     configureRouting(ChiSquareTest())
 }
